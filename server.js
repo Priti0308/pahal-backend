@@ -52,7 +52,7 @@ app.options('*', cors(corsOptions));
 app.use('/api/events', require('./routes/eventRoutes'));
 app.use('/api/participants', require('./routes/participantRoutes'));
 app.use('/api/auth', authRoutes);
-
+app.use('/api/admin/dashboard', require('./routes/dashboardRoutes'));
 // Global error handler for CORS errors
 app.use((err, req, res, next) => {
   if (err.message === 'Not allowed by CORS') {
