@@ -3,13 +3,15 @@ const Joi = require('joi');
 const validateEvent = (req, res, next) => {
   const schema = Joi.object({
     title: Joi.string().required(),
-    emoji: Joi.string().optional(), // Add this line to allow emoji
+    emoji: Joi.string().optional(), 
     category: Joi.string().required(),
     date: Joi.string().required(),
     time: Joi.string().optional(),
     location: Joi.string().required(),
     bannerImage: Joi.string().uri().optional(),
     description: Joi.string().required(),
+    teamSize: Joi.number().optional(),
+
     registrationFee: Joi.string().optional(),
     attendees: Joi.number().optional(),
     prizes: Joi.array().items(

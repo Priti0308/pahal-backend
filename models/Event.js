@@ -1,3 +1,4 @@
+ 
 const mongoose = require('mongoose');
 
 const eventSchema = new mongoose.Schema({
@@ -18,6 +19,7 @@ const eventSchema = new mongoose.Schema({
     icon: String,
     color: String
   }],
+  teamSize: { type: Number},
   schedule: [{
     round: String,
     date: String,
