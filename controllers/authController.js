@@ -68,3 +68,56 @@ exports.loginAdmin = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const adminId = req.admin.adminId;
+
+    // Find admin by ID
+    const admin = await Admin.findById(adminId);
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+ 
+    const isMatch = await bcrypt.compare(oldPassword, admin.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Current password is incorrect' });
+    }
+ 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+ 
+    admin.password = hashedPassword;
+    await admin.save();
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+exports.getLoggedUser = async (req, res) => {
+  try {
+    const adminId = req.admin._id;
+     
+    const admin = await Admin.findById(adminId).select('-password');
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    res.json({
+      admin: {
+        id: admin._id,
+        username: admin.username,
+        email: admin.email,
+        role: admin.role,
+        isActive: admin.isActive,
+        createdAt: admin.createdAt,
+        updatedAt: admin.updatedAt
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};

@@ -9,7 +9,23 @@ exports.createEvent = async (req, res) => {
     res.status(500).json({ message: 'Error creating event', error: error.message });
   }
 };
-
+exports.updateEvent = async (req, res) => {
+  try {
+    const updatedEvent = await Event.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedEvent) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    
+    res.status(200).json(updatedEvent);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating event', error: error.message });
+  }
+};
 exports.getAllEvents = async (req, res) => {
   try {
     const events = await Event.find({ isActive: true });
