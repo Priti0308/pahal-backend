@@ -2,6 +2,10 @@ const Joi = require('joi');
 
 const validateEvent = (req, res, next) => {
   const schema = Joi.object({
+    _id: Joi.string().optional(),
+    createdAt: Joi.string().optional(),
+    updatedAt: Joi.string().optional(),
+    __v: Joi.number().optional(),
     title: Joi.string().required(),
     emoji: Joi.string().optional(), 
     category: Joi.string().required(),
@@ -16,6 +20,7 @@ const validateEvent = (req, res, next) => {
     attendees: Joi.number().optional(),
     prizes: Joi.array().items(
       Joi.object({
+        _id: Joi.string().optional(),
         title: Joi.string(),
         amount: Joi.string(),
         description: Joi.string().optional(),
@@ -25,6 +30,7 @@ const validateEvent = (req, res, next) => {
     ).optional(),
     schedule: Joi.array().items(
       Joi.object({
+        _id: Joi.string().optional(),
         round: Joi.string(),
         date: Joi.string(),
         description: Joi.string().optional()
@@ -33,24 +39,28 @@ const validateEvent = (req, res, next) => {
     guidelines: Joi.array().items(Joi.string()).optional(),
     faqs: Joi.array().items(
       Joi.object({
+        _id: Joi.string().optional(),
         question: Joi.string(),
         answer: Joi.string()
       })
     ).optional(),
     sponsors: Joi.array().items(
       Joi.object({
+        _id: Joi.string().optional(),
         name: Joi.string(),
         image: Joi.string().optional()
       })
     ).optional(),
     coordinators: Joi.array().items(
       Joi.object({
+        _id: Joi.string().optional(),
         name: Joi.string(),
         contact: Joi.string().optional(),
         image: Joi.string().optional()
       })
     ).optional(),
     quickInfo: Joi.object({
+      _id: Joi.string().optional(),
       teamSize: Joi.string().optional(),
       prizePool: Joi.string().optional(),
       duration: Joi.string().optional(),
@@ -58,6 +68,7 @@ const validateEvent = (req, res, next) => {
     }).optional(),
     resources: Joi.array().items(
       Joi.object({
+        _id: Joi.string().optional(),
         name: Joi.string(),
         icon: Joi.string().optional(),
         url: Joi.string().uri().optional()
