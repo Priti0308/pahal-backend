@@ -4,14 +4,21 @@ const {
   registerParticipant, 
   getEventParticipants,
   getParticipantReport,
-  getAllParticipantReports
+  getAllParticipantReports,
+  getParticipantCount,
+  getParticipantById,
+  getParticipantsByEventId
 } = require('../controllers/participantController');
-const { validateParticipant } = require('../middleware/validationMiddleware');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { validateParticipant } = require('../middleware/validationMiddleware'); 
 
 router.post('/register', validateParticipant, registerParticipant);
-router.get('/:eventId/participants', authMiddleware, getEventParticipants);
-router.get('/report/:eventId', authMiddleware, getParticipantReport);
-router.get('/all-reports', authMiddleware, getAllParticipantReports);
+router.get('/:eventId/participants',  getEventParticipants);
+router.get('/report/:eventId',  getParticipantReport);
+router.get('/all-reports',  getAllParticipantReports);
 
-module.exports = router;
+// New routes
+router.get('/count', getParticipantCount);
+router.get('/:id', getParticipantById);
+router.get('/event/:eventId', getParticipantsByEventId);
+
+module.exports = router;  
