@@ -72,7 +72,7 @@ exports.loginAdmin = async (req, res) => {
 exports.changePassword = async (req, res) => {
   try {
     const { oldPassword, newPassword } = req.body;
-    const adminId = req.admin.adminId;
+    const adminId = req.admin._id;
 
     // Find admin by ID
     const admin = await Admin.findById(adminId);
