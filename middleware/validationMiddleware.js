@@ -3,7 +3,6 @@ const Joi = require('joi');
 const validateEvent = (req, res, next) => {
   const schema = Joi.object({
     _id: Joi.string().optional(),
-    collegeName: Joi.string().optional(),
     createdAt: Joi.string().optional(),
     updatedAt: Joi.string().optional(),
     __v: Joi.number().optional(),
@@ -90,6 +89,7 @@ const validateEvent = (req, res, next) => {
 const validateParticipant = (req, res, next) => {
   const schema = Joi.object({
     eventId: Joi.string().required(),
+    collegeName: Joi.string().optional(),
     teamName: Joi.string().required(),
     teamLeader: Joi.object({
       name: Joi.string().required(),
