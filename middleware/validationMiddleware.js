@@ -3,6 +3,7 @@ const Joi = require('joi');
 const validateEvent = (req, res, next) => {
   const schema = Joi.object({
     _id: Joi.string().optional(),
+    collegeName: Joi.string().optional(),
     createdAt: Joi.string().optional(),
     updatedAt: Joi.string().optional(),
     __v: Joi.number().optional(),

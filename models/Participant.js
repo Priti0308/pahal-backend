@@ -6,6 +6,7 @@ const participantSchema = new mongoose.Schema({
     ref: 'Event', 
     required: true 
   },
+  collegeName: { type: String, required: true },
   teamName: { type: String, required: true },
   teamLeader: {
     name: { type: String, required: true },
