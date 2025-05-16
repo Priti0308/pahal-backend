@@ -132,7 +132,8 @@
 							"path": ["api", "events"]
 						}
 					}
-				},
+				},   
+				
 				{
 					"name": "Create Event - AI Hackathon",
 					"request": {

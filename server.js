@@ -1,19 +1,15 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors'); // Add this line
+const cors = require('cors');  
 const bodyParser = require('body-parser');
 const connectDB = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
 
 const app = express();
-
-// Connect to MongoDB
-connectDB();
-
-// CORS Configuration
+ 
+connectDB(); 
 const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+  origin: function (origin, callback) { 
     const allowedOrigins = [
       'http://localhost:5173', // Vite default port
       'http://localhost:3000', // Create React App default port

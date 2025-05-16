@@ -16,11 +16,11 @@ exports.updateEvent = async (req, res) => {
       req.body,
       { new: true, runValidators: true }
     );
-    
+
     if (!updatedEvent) {
       return res.status(404).json({ message: 'Event not found' });
     }
-    
+
     res.status(200).json(updatedEvent);
   } catch (error) {
     res.status(500).json({ message: 'Error updating event', error: error.message });
@@ -29,6 +29,15 @@ exports.updateEvent = async (req, res) => {
 exports.getAllEvents = async (req, res) => {
   try {
     const events = await Event.find({ isActive: true });
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching events', error: error.message });
+  }
+};
+
+exports.getAllEventsInactiveActive = async (req, res) => {
+  try {
+    const events = await Event.find();
     res.status(200).json(events);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching events', error: error.message });
