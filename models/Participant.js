@@ -14,8 +14,8 @@ const participantSchema = new mongoose.Schema({
     phone: { type: String, required: true }
   },
   paymentDetails: {
-    transactionId: { type: String, required: true },
-    amount: { type: Number, required: true },
+    transactionId: { type: String},
+    amount: { type: Number },
     paymentDate: { type: Date, default: Date.now }
   },
   accepted: { type: Boolean, default: false },
