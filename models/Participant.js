@@ -13,6 +13,13 @@ const participantSchema = new mongoose.Schema({
     email: { type: String, required: true },
     phone: { type: String, required: true }
   },
+  paymentDetails: {
+    transactionId: { type: String, required: true },
+    amount: { type: Number, required: true },
+    paymentDate: { type: Date, default: Date.now }
+  },
+  accepted: { type: Boolean, default: false },
+  paymentStatus: { type: Boolean, default: false },
   teamMembers: [{
     name: String,
     email: String,

@@ -7,7 +7,10 @@ const {
   getAllParticipantReports,
   getParticipantCount,
   getParticipantById,
-  getParticipantsByEventId
+  getParticipantsByEventId,
+  acceptParticipant,
+  rejectParticipant,
+  paymentStatus
 } = require('../controllers/participantController');
 const { validateParticipant } = require('../middleware/validationMiddleware'); 
 
@@ -21,4 +24,11 @@ router.get('/count', getParticipantCount);
 router.get('/:id', getParticipantById);
 router.get('/event/:eventId', getParticipantsByEventId);
 
-module.exports = router;  
+//accept the participant
+router.get('/accept/:id', acceptParticipant);
+router.get('/reject/:id', rejectParticipant);
+
+//payment status
+router.get('/payment-status/:id', paymentStatus);
+
+module.exports = router;

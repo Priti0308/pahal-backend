@@ -1,0 +1,780 @@
+{
+	"info": {
+		"_postman_id": "858b3081-4e0d-4f09-9b7e-6195798cbf5d",
+		"name": "Pahal Event Registration API",
+		"description": "Complete API collection for testing the Pahal Event Registration Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32460743",
+		"_collection_link": "https://universal-zodiac-499706.postman.co/workspace/Mahes-Langote-Public-Workspace~656092ef-c56b-4a61-8555-9a649ae0214e/collection/32460743-858b3081-4e0d-4f09-9b7e-6195798cbf5d?action=share&source=collection_link&creator=32460743"
+	},
+	"item": [
+		{
+			"name": "Admin Authentication",
+			"item": [
+				{
+					"name": "Register Super Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"superadmin_cimdr\",\n    \"email\": \"superadmin@cimdr.edu.in\",\n    \"password\": \"SuperAdmin@2024!\",\n    \"role\": \"super_admin\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new super admin user"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Event Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"eventadmin_tech\",\n    \"email\": \"eventadmin@cimdr.edu.in\",\n    \"password\": \"EventAdmin@2024!\",\n    \"role\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new event admin user"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"if (jsonData && jsonData.token) {",
+									"    pm.environment.set(\"authToken\", jsonData.token);",
+									"    console.log(\"Token saved to environment\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login as admin user and get authentication token"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Logged User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Get details of the currently logged-in admin"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"oldPassword\": \"CurrentPassword123\",\n    \"newPassword\": \"NewPassword123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/change-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"change-password"
+							]
+						},
+						"description": "Change password for the logged-in admin"
+					},
+					"response": []
+				}
+			],
+			"description": "Admin authentication endpoints for registration, login and management"
+		},
+		{
+			"name": "Event Management",
+			"item": [
+				{
+					"name": "Create Event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Code Odyssey 2024\",\n    \"emoji\": \"🚀\",\n    \"category\": \"Software Development\",\n    \"date\": \"March 15-17, 2024\",\n    \"time\": \"9:00 AM - 6:00 PM\",\n    \"location\": \"CIMDR Campus, Sangli\",\n    \"bannerImage\": \"https://images.unsplash.com/photo-1555066931-4365d14bab8c\",\n    \"description\": \"CIMDR's flagship software development competition bringing together the brightest minds from colleges across India.\",\n    \"registrationFee\": \"₹500\",\n    \"attendees\": 0,\n    \"teamSize\": 4,\n    \"prizes\": [\n        {\n            \"title\": \"First Prize\",\n            \"amount\": \"₹25,000\",\n            \"description\": \"Plus certification\",\n            \"icon\": \"Trophy\",\n            \"color\": \"text-yellow-500\"\n        },\n        {\n            \"title\": \"Second Prize\",\n            \"amount\": \"₹15,000\",\n            \"description\": \"Plus certification\",\n            \"icon\": \"Medal\",\n            \"color\": \"text-gray-500\"\n        },\n        {\n            \"title\": \"Third Prize\",\n            \"amount\": \"₹10,000\",\n            \"description\": \"Plus certification\",\n            \"icon\": \"Award\",\n            \"color\": \"text-bronze-500\"\n        }\n    ],\n    \"schedule\": [\n        {\n            \"round\": \"Online Qualification\",\n            \"date\": \"March 15, 2024\",\n            \"description\": \"Online coding challenge\"\n        },\n        {\n            \"round\": \"Project Development\",\n            \"date\": \"March 16, 2024\",\n            \"description\": \"24-hour hackathon\"\n        },\n        {\n            \"round\": \"Final Presentations\",\n            \"date\": \"March 17, 2024\",\n            \"description\": \"Project demonstrations and judging\"\n        }\n    ],\n    \"guidelines\": [\n        \"Teams of 2-4 members\",\n        \"Currently enrolled students\",\n        \"Original projects only\",\n        \"Teams must bring their own laptops\",\n        \"Internet access will be provided\"\n    ],\n    \"faqs\": [\n        {\n            \"question\": \"What is the registration fee?\",\n            \"answer\": \"₹500 per team\"\n        },\n        {\n            \"question\": \"Is accommodation provided?\",\n            \"answer\": \"Yes, accommodation is provided for outstation participants\"\n        },\n        {\n            \"question\": \"What technologies can we use?\",\n            \"answer\": \"Any programming language or framework is allowed\"\n        }\n    ],\n    \"sponsors\": [\n        {\n            \"name\": \"TechCorp\",\n            \"image\": \"techcorp_logo.png\"\n        },\n        {\n            \"name\": \"InnovateSoft\",\n            \"image\": \"innovatesoft_logo.png\"\n        }\n    ],\n    \"coordinators\": [\n        {\n            \"name\": \"Prof. Rajesh Kumar\",\n            \"contact\": \"+91 98765 43210\",\n            \"image\": \"rajesh_profile.jpg\"\n        },\n        {\n            \"name\": \"Prof. Anita Sharma\",\n            \"contact\": \"+91 98765 12345\",\n            \"image\": \"anita_profile.jpg\"\n        }\n    ],\n    \"quickInfo\": {\n        \"teamSize\": \"2-4 members\",\n        \"prizePool\": \"₹50,000\",\n        \"duration\": \"3 days\",\n        \"eligibility\": \"All colleges\"\n    },\n    \"resources\": [\n        {\n            \"name\": \"Event Rules\",\n            \"icon\": \"File\",\n            \"url\": \"https://cimdr.edu.in/code-odyssey-rules\"\n        },\n        {\n            \"name\": \"Required Software\",\n            \"icon\": \"Download\",\n            \"url\": \"https://cimdr.edu.in/code-odyssey-software\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events"
+							]
+						},
+						"description": "Create a new event"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Event - AI Hackathon",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"AI Innovation Hackathon\",\n    \"emoji\": \"🤖\",\n    \"category\": \"Artificial Intelligence\",\n    \"date\": \"April 20-22, 2024\",\n    \"time\": \"10:00 AM - 5:00 PM\",\n    \"location\": \"CIMDR Tech Hub, Sangli\",\n    \"bannerImage\": \"https://images.unsplash.com/photo-1677442136019-21780ecad995\",\n    \"description\": \"Cutting-edge AI solutions competition for passionate tech innovators.\",\n    \"registrationFee\": \"₹600\",\n    \"attendees\": 0,\n    \"teamSize\": 3,\n    \"prizes\": [\n        {\n            \"title\": \"Grand Prize\",\n            \"amount\": \"₹50,000\",\n            \"description\": \"Startup mentorship\",\n            \"icon\": \"Award\",\n            \"color\": \"text-blue-500\"\n        },\n        {\n            \"title\": \"Runner Up\",\n            \"amount\": \"₹25,000\",\n            \"description\": \"Plus internship opportunities\",\n            \"icon\": \"Medal\",\n            \"color\": \"text-silver-500\"\n        }\n    ],\n    \"schedule\": [\n        {\n            \"round\": \"AI Concept Pitch\",\n            \"date\": \"April 20, 2024\",\n            \"description\": \"Project idea presentation\"\n        },\n        {\n            \"round\": \"Prototype Development\",\n            \"date\": \"April 21-22, 2024\",\n            \"description\": \"48-hour AI solution creation\"\n        }\n    ],\n    \"guidelines\": [\n        \"AI and machine learning solutions only\",\n        \"Teams of 2-3 members\",\n        \"Innovative problem-solving approach\",\n        \"Practical applications preferred\",\n        \"Must use at least one open-source AI framework\"\n    ],\n    \"faqs\": [\n        {\n            \"question\": \"What AI frameworks are allowed?\",\n            \"answer\": \"Any open-source AI framework including TensorFlow, PyTorch, etc.\"\n        },\n        {\n            \"question\": \"Is cloud computing allowed?\",\n            \"answer\": \"Yes, teams can use cloud services for model training and deployment\"\n        }\n    ],\n    \"coordinators\": [\n        {\n            \"name\": \"Dr. Priya Singh\",\n            \"contact\": \"+91 87654 32109\",\n            \"image\": \"priya_profile.jpg\"\n        }\n    ],\n    \"quickInfo\": {\n        \"teamSize\": \"2-3 members\",\n        \"prizePool\": \"₹75,000\",\n        \"duration\": \"3 days\",\n        \"eligibility\": \"Engineering colleges only\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events"
+							]
+						},
+						"description": "Create an AI Hackathon event"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Events",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"if (jsonData && jsonData.length > 0) {",
+									"    pm.environment.set(\"eventId\", jsonData[0]._id);",
+									"    console.log(\"Event ID saved: \" + jsonData[0]._id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events"
+							]
+						},
+						"description": "Get all active events"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Events (Active & Inactive)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"if (jsonData && jsonData.length > 0) {",
+									"    pm.environment.set(\"allEventId\", jsonData[0]._id);",
+									"    console.log(\"All Event ID saved: \" + jsonData[0]._id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events",
+								"all"
+							]
+						},
+						"description": "Get all events including inactive ones (requires admin authentication)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Event By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/events/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events",
+								"{{eventId}}"
+							]
+						},
+						"description": "Get details of a specific event"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Event",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Code Odyssey 2024\",\n    \"emoji\": \"🚀\",\n    \"category\": \"Software Development\",\n    \"date\": \"March 15-17, 2024\",\n    \"time\": \"9:00 AM - 6:00 PM\",\n    \"location\": \"CIMDR Campus, Sangli\",\n    \"description\": \"CIMDR's flagship software development competition (Updated description).\",\n    \"registrationFee\": \"₹600\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/events/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"events",
+								"{{eventId}}"
+							]
+						},
+						"description": "Update an existing event"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for managing events"
+		},
+		{
+			"name": "Participant Registration",
+			"item": [
+				{
+					"name": "Register Participant",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"if (jsonData && jsonData._id) {",
+									"    pm.environment.set(\"participantId\", jsonData._id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"eventId\": \"{{eventId}}\",\n    \"collegeName\": \"CIMDR Engineering College\",\n    \"teamName\": \"Tech Innovators\",\n    \"teamLeader\": {\n        \"name\": \"Aditya Sharma\",\n        \"email\": \"aditya.sharma@college.edu\",\n        \"phone\": \"+91 9876543210\"\n    },\n    \"teamMembers\": [\n        {\n            \"name\": \"Priya Patel\",\n            \"email\": \"priya.patel@college.edu\",\n            \"college\": \"CIMDR Engineering College\"\n        },\n        {\n            \"name\": \"Rohit Kumar\",\n            \"email\": \"rohit.kumar@college.edu\",\n            \"college\": \"CIMDR Engineering College\"\n        },\n        {\n            \"name\": \"Sneha Gupta\",\n            \"email\": \"sneha.gupta@college.edu\",\n            \"college\": \"CIMDR Engineering College\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"register"
+							]
+						},
+						"description": "Register a participant for an event"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Participant - AI Hackathon",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"eventId\": \"{{aiEventId}}\",\n    \"collegeName\": \"VIT Engineering College\",\n    \"teamName\": \"AI Wizards\",\n    \"teamLeader\": {\n        \"name\": \"Rahul Desai\",\n        \"email\": \"rahul.desai@vit.edu\",\n        \"phone\": \"+91 8765432109\"\n    },\n    \"teamMembers\": [\n        {\n            \"name\": \"Meera Singh\",\n            \"email\": \"meera.singh@vit.edu\",\n            \"college\": \"VIT Engineering College\"\n        },\n        {\n            \"name\": \"Vikram Joshi\",\n            \"email\": \"vikram.joshi@vit.edu\",\n            \"college\": \"VIT Engineering College\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"register"
+							]
+						},
+						"description": "Register a participant for the AI Hackathon event"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Participant Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/count",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"count"
+							]
+						},
+						"description": "Get total count of all participants"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Participant By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/{{participantId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"{{participantId}}"
+							]
+						},
+						"description": "Get details of a specific participant"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Participants By Event ID (Detailed)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/event/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"event",
+								"{{eventId}}"
+							]
+						},
+						"description": "Get all participants for a specific event with detailed information"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Event Participants",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/{{eventId}}/participants",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"{{eventId}}",
+								"participants"
+							]
+						},
+						"description": "Get all participants for a specific event"
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Participant",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/accept/{{participantId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"accept",
+								"{{participantId}}"
+							]
+						},
+						"description": "Accept a participant registration"
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Participant",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/reject/{{participantId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"reject",
+								"{{participantId}}"
+							]
+						},
+						"description": "Reject a participant registration"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Payment Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/payment-status/{{participantId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"payment-status",
+								"{{participantId}}"
+							]
+						},
+						"description": "Update payment status for a participant"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for participant registration and management"
+		},
+		{
+			"name": "Reporting",
+			"item": [
+				{
+					"name": "Get Participant Report",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/report/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"report",
+								"{{eventId}}"
+							]
+						},
+						"description": "Get participant report for a specific event"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Participant Reports",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/participants/all-reports",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"participants",
+								"all-reports"
+							]
+						},
+						"description": "Get participant reports for all events"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Dashboard Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/dashboard/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"dashboard",
+								"stats"
+							]
+						},
+						"description": "Get overview dashboard statistics"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Event Detailed Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/dashboard/event-stats/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"dashboard",
+								"event-stats",
+								"{{eventId}}"
+							]
+						},
+						"description": "Get detailed statistics for a specific event"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for reports and statistics"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "superadmin_cimdr",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "SuperAdmin@2024!",
+			"type": "string"
+		}
+	]
+}
