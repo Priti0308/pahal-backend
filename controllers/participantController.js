@@ -197,9 +197,8 @@ exports.getParticipantsByEventId = async (req, res) => {
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
-
+ 
     const participants = await Participant.find({ eventId })
-      .select('teamName teamLeader teamMembers registrationDate')
       .sort({ registrationDate: -1 });
 
     const participantCount = participants.length;
