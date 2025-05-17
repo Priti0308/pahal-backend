@@ -1,18 +1,15 @@
 const Participant = require('../models/Participant');
 const Event = require('../models/Event');
-const { sendAcceptanceEmail } = require('../utils/emailService'); // Import the email service
+const { sendAcceptanceEmail } = require('../utils/emailService');
 
 exports.registerParticipant = async (req, res) => {
   try {
-    // Check if event exists
     const event = await Event.findById(req.body.eventId);
     if (!event) return res.status(404).json({ message: 'Event not found' });
 
-    // Create new participant
     const newParticipant = new Participant(req.body);
     const savedParticipant = await newParticipant.save();
 
-    // Update event attendees count
     event.attendees += 1;
     await event.save();
 
@@ -29,27 +26,26 @@ exports.acceptParticipant = async (req, res) => {
       return res.status(404).json({ message: 'Participant not found' });
     }
 
-    // Check if already accepted to avoid sending multiple emails
     if (participant.accepted) {
       return res.status(200).json({ message: 'Participant already accepted', participant });
     }
 
     participant.accepted = true;
-    await participant.save();    // Send acceptance email with dynamic event information
+    await participant.save();    
     if (participant.teamLeader && participant.teamLeader.email && participant.eventId) {
       try {
         const event = await Event.findById(participant.eventId);
         if (event) {
           const recipientInfo = {
-            email: participant.teamLeader.email, // Team leader's email from the nested object
-            name: participant.teamLeader.name, // Team leader's name from the nested object
+            email: participant.teamLeader.email,
+            name: participant.teamLeader.name,
             teamName: participant.teamName
           };
           const eventInfo = {
             title: event.title,
             date: event.date,
-            time: event.time, // Assuming your Event model has a 'time' field
-            venue: event.venue, // Assuming your Event model has a 'venue' field
+            time: event.time, 
+            venue: event.venue,  
           };
           await sendAcceptanceEmail(recipientInfo, eventInfo);
         } else {
@@ -107,7 +103,6 @@ exports.getParticipantReport = async (req, res) => {
   try {
     const { eventId } = req.params;
 
-    // Aggregate participants with event details
     const report = await Participant.aggregate([
       { $match: { eventId: mongoose.Types.ObjectId(eventId) } },
       {
@@ -198,7 +193,6 @@ exports.getParticipantsByEventId = async (req, res) => {
   try {
     const { eventId } = req.params;
 
-    // First verify the event exists
     const event = await Event.findById(eventId);
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
@@ -210,11 +204,8 @@ exports.getParticipantsByEventId = async (req, res) => {
 
     const participantCount = participants.length;
 
-    // Calculate total team members (including team leaders)
     const totalAttendees = participants.reduce((total, participant) => {
-      // Count team leader
       let count = 1;
-      // Add team members
       count += participant.teamMembers ? participant.teamMembers.length : 0;
       return total + count;
     }, 0);
