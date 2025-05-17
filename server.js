@@ -11,11 +11,9 @@ connectDB();
 const corsOptions = {
   origin: function (origin, callback) { 
     const allowedOrigins = [
-      'http://localhost:5173', // Vite default port
-     'http://localhost:5174'
+      'http://localhost:5173',  
       'http://localhost:3000', // Create React App default port
-      'http://127.0.0.1:5173',
-     'http://127.0.0.1:5174',
+      'http://127.0.0.1:5173', 
       'http://127.0.0.1:3000',
       'https://pahal--two.vercel.app'
     ];
