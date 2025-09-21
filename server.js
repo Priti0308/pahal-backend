@@ -3,63 +3,55 @@ const express = require('express');
 const cors = require('cors');  
 const bodyParser = require('body-parser');
 const connectDB = require('./config/database');
-const authRoutes = require('./routes/authRoutes');
 
 const app = express();
- 
+
+// Connect DB
 connectDB(); 
+
+// --- CORS ---
 const corsOptions = {
   origin: function (origin, callback) { 
     const allowedOrigins = [
       'http://localhost:5173',  
-      'http://localhost:3000', // Create React App default port
+      'http://localhost:3000',
       'http://127.0.0.1:5173', 
       'http://127.0.0.1:3000',
-      'https://pahal--two.vercel.app'
+      'https://pahal--two.vercel.app',
+      'https://pahal-frontend.vercel.app'  // 👈 add your actual frontend deploy URL
     ];
 
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    if (!origin || allowedOrigins.includes(origin) || !origin) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: [
-    'Content-Type', 
-    'Authorization', 
-    'Access-Control-Allow-Methods', 
-    'Access-Control-Allow-Origin', 
-    'Access-Control-Allow-Headers'
-  ],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 200
 };
 
-// Apply CORS middleware
 app.use(cors(corsOptions));
-
-// Middleware
 app.use(bodyParser.json());
 
-// Preflight request handler for all routes
+// Preflight
 app.options('*', cors(corsOptions));
 
 // Routes
 app.use('/api/events', require('./routes/eventRoutes'));
 app.use('/api/participants', require('./routes/participantRoutes'));
-// app.use('/api/auth', authRoutes);
-app.use("/api/auth", require("./routes/authRoutes"));
+app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/admin/dashboard', require('./routes/dashboardRoutes'));
-// Global error handler for CORS errors
+
+// CORS error handler
 app.use((err, req, res, next) => {
   if (err.message === 'Not allowed by CORS') {
-    return res.status(403).json({
-      error: 'Access denied by CORS policy'
-    });
+    return res.status(403).json({ error: 'Access denied by CORS policy' });
   }
   next(err);
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// ⚡ IMPORTANT: do not use app.listen() for Vercel
+module.exports = app;
