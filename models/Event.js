@@ -50,7 +50,10 @@ const eventSchema = new mongoose.Schema({
     icon: String,
     url: String
   }],
-  isActive: { type: Boolean, default: true }
+  isActive: {
+    type: Boolean,
+    default: true
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Event', eventSchema);
