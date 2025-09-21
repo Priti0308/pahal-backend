@@ -1,57 +1,64 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');  
-const bodyParser = require('body-parser');
-const connectDB = require('./config/database');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const connectDB = require("./config/database");
 
 const app = express();
 
-// Connect DB
-connectDB(); 
+// --- Connect Database ---
+connectDB();
 
-// --- CORS ---
+// --- CORS Configuration ---
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000", // CRA default
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:3000",
+  "https://pahal--two.vercel.app", // your frontend on Vercel
+];
+
 const corsOptions = {
-  origin: function (origin, callback) { 
-    const allowedOrigins = [
-      'http://localhost:5173',  
-      'http://localhost:3000',
-      'http://127.0.0.1:5173', 
-      'http://127.0.0.1:3000',
-      'https://pahal--two.vercel.app',
-      'https://pahal-frontend.vercel.app'  // 👈 add your actual frontend deploy URL
-    ];
-
-    if (!origin || allowedOrigins.includes(origin) || !origin) {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
 };
 
+// Apply CORS
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Preflight requests
+
+// --- Middleware ---
 app.use(bodyParser.json());
 
-// Preflight
-app.options('*', cors(corsOptions));
+// --- Routes ---
+app.use("/api/events", require("./routes/eventRoutes"));
+app.use("/api/participants", require("./routes/participantRoutes"));
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/admin/dashboard", require("./routes/dashboardRoutes"));
 
-// Routes
-app.use('/api/events', require('./routes/eventRoutes'));
-app.use('/api/participants', require('./routes/participantRoutes'));
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/admin/dashboard', require('./routes/dashboardRoutes'));
-
-// CORS error handler
-app.use((err, req, res, next) => {
-  if (err.message === 'Not allowed by CORS') {
-    return res.status(403).json({ error: 'Access denied by CORS policy' });
-  }
-  next(err);
+// --- Health Check Route ---
+app.get("/", (req, res) => {
+  res.json({ message: "API is running 🚀" });
 });
 
-// ⚡ IMPORTANT: do not use app.listen() for Vercel
-module.exports = app;
+// --- Error Handler ---
+app.use((err, req, res, next) => {
+  console.error("Error:", err.message); // log full error
+  if (err.message === "Not allowed by CORS") {
+    return res.status(403).json({ error: "Access denied by CORS policy" });
+  }
+  res.status(500).json({ error: "Internal Server Error", details: err.message });
+});
+
+// --- Start Server ---
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
